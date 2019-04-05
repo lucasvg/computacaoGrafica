@@ -1,6 +1,6 @@
 let STATES = {
-  CREATING_POLYGOM: 1,
-  TO_CREATE_POLYGOM: 2
+  CREATING_POLYGON: 1,
+  TO_CREATE_POLYGON: 2
 };
 
 let Dot = class Dot {
@@ -10,16 +10,17 @@ let Dot = class Dot {
   }
 }
 
-let Polygram = class Polygram {
+let Polygon = class Polygon {
   dots = [];
   addDot(dot){
     this.dots.push(dot);
   }
 }
 
-let currentState = STATES.TO_CREATE_POLYGOM;
+let currentState = STATES.TO_CREATE_POLYGON;
 
-let curUnfinishedPolygom;
+let curUnfinishedPolygon;
+
 
 function setup(){
   createCanvas(400, 400);
@@ -28,20 +29,20 @@ function setup(){
 function mouseClicked(){
   let dot;
   switch(currentState) {
-    case STATES.TO_CREATE_POLYGOM:
-      currentState = STATES.CREATING_POLYGOM;
+    case STATES.TO_CREATE_POLYGON:
+      currentState = STATES.CREATING_POLYGON;
 
-      curUnfinishedPolygom = new Polygram();
+      curUnfinishedPolygon = new Polygon();
 
       dot = new Dot(mouseX, mouseY);
-      curUnfinishedPolygom.addDot(dot);
+      curUnfinishedPolygon.addDot(dot);
 
-      console.log(curUnfinishedPolygom);
+      console.log(curUnfinishedPolygon);
       break;
-    case STATES.CREATING_POLYGOM:
+    case STATES.CREATING_POLYGON:
       dot = new Dot(mouseX, mouseY);
-      curUnfinishedPolygom.addDot(dot);    
-      console.log(curUnfinishedPolygom);
+      curUnfinishedPolygon.addDot(dot);    
+      console.log(curUnfinishedPolygon);
       break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
