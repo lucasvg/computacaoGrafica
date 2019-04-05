@@ -26,20 +26,22 @@ function setup(){
 }
 
 function mouseClicked(){
+  let dot;
   switch(currentState) {
     case STATES.TO_CREATE_POLYGOM:
       currentState = STATES.CREATING_POLYGOM;
 
       curUnfinishedPolygom = new Polygram();
 
-      let dot = new Dot(mouseX, mouseY);
+      dot = new Dot(mouseX, mouseY);
       curUnfinishedPolygom.addDot(dot);
 
-      alert('TO_CREATE_POLYGOM');
-      alert(mouseX + ' ' + mouseY);
+      console.log(curUnfinishedPolygom);
       break;
     case STATES.CREATING_POLYGOM:
-      alert('CREATING_POLYGOM');
+      dot = new Dot(mouseX, mouseY);
+      curUnfinishedPolygom.addDot(dot);    
+      console.log(curUnfinishedPolygom);
       break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
