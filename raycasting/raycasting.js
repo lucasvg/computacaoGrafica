@@ -19,7 +19,7 @@ let Polygon = class Polygon {
 
 let currentState = STATES.TO_CREATE_POLYGON;
 
-let curUnfinishedPolygon;
+let curUnfinishedPolygon = new Polygon();
 
 let polygons = [];
 
@@ -33,8 +33,6 @@ function mouseClicked(){
   switch(currentState) {
     case STATES.TO_CREATE_POLYGON:
       currentState = STATES.CREATING_POLYGON;
-
-      curUnfinishedPolygon = new Polygon();
 
       dot = new Dot(mouseX, mouseY);
       curUnfinishedPolygon.addDot(dot);
@@ -56,7 +54,7 @@ function doubleClicked() {
     case STATES.CREATING_POLYGON:
       curUnfinishedPolygon.dots.pop(); // removes last double dot created on doubleClicked
       polygons.push(curUnfinishedPolygon);
-      curUnfinishedPolygon = null;
+      curUnfinishedPolygon  = new Polygon();
       currentState = STATES.TO_CREATE_POLYGON;
       break;
     default:
@@ -67,6 +65,7 @@ function doubleClicked() {
 function draw() {
   background(204);
   drawPolygons();
+  drawCurUnfinishedPolygon();
 }
 
 function drawPolygons(){
@@ -82,4 +81,17 @@ function drawPolygons(){
     }
     endShape(CLOSE);
   }
+}
+
+function drawCurUnfinishedPolygon() {
+  fill(150, 10);
+
+  beginShape();
+  let dot;
+  for (var i = curUnfinishedPolygon.dots.length - 1; i >= 0; i--) {
+    dot = curUnfinishedPolygon.dots[i];
+    vertex(dot.x, dot.y);
+  }
+  vertex(mouseX, mouseY);
+  endShape(CLOSE);
 }
