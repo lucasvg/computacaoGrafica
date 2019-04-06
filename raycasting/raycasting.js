@@ -21,6 +21,8 @@ let currentState = STATES.TO_CREATE_POLYGON;
 
 let curUnfinishedPolygon;
 
+let polygons = [];
+
 
 function setup(){
   createCanvas(400, 400);
@@ -46,5 +48,18 @@ function mouseClicked(){
       break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
+  }
+}
+
+function doubleClicked() {
+  switch(currentState) {
+    case STATES.CREATING_POLYGON:
+      curUnfinishedPolygon.dots.pop(); // removes last double dot created on doubleClicked
+      polygons.push(curUnfinishedPolygon);
+      curUnfinishedPolygon = null;
+      currentState = STATES.TO_CREATE_POLYGON;
+      break;
+    default:
+      console.log('Doubleclick with no shape started. Does nothing');
   }
 }
