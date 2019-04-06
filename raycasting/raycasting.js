@@ -65,17 +65,18 @@ function doubleClicked() {
 }
 
 function draw() {
+  background(204);
   drawPolygons();
 }
 
 function drawPolygons(){
   fill(150, 10);
   let polygon;
-  for (var i = polygons.length - 1; i >= 0; i--) {
+  for (let i = polygons.length - 1; i >= 0; i--) {
     polygon = polygons[i];
-    beginShape();
     let dot;
-    for (var i = polygon.dots.length - 1; i >= 0; i--) {
+    beginShape();
+    for (let i = polygon.dots.length - 1; i >= 0; i--) {
       dot = polygon.dots[i];
       vertex(dot.x, dot.y);
     }
