@@ -19,13 +19,13 @@ let Polygon = class Polygon {
 
 let currentState = STATES.TO_CREATE_POLYGON;
 
-let curUnfinishedPolygon = new Polygon();
+let curUnfinishedPolygon;
 
 let polygons = [];
 
-
 function setup(){
   createCanvas(400, 400);
+  cleanStateVariables();
 }
 
 function mouseClicked(){
@@ -54,7 +54,7 @@ function doubleClicked() {
     case STATES.CREATING_POLYGON:
       curUnfinishedPolygon.dots.pop(); // removes last double dot created on doubleClicked
       polygons.push(curUnfinishedPolygon);
-      curUnfinishedPolygon  = new Polygon();
+      cleanStateVariables();
       currentState = STATES.TO_CREATE_POLYGON;
       break;
     default:
@@ -95,3 +95,8 @@ function drawCurUnfinishedPolygon() {
   vertex(mouseX, mouseY);
   endShape(CLOSE);
 }
+
+function cleanStateVariables(){
+  curUnfinishedPolygon = new Polygon();
+}
+
