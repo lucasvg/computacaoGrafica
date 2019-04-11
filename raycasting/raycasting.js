@@ -1,6 +1,6 @@
 let STATES = {
   CREATING_POLYGON: 1,
-  TO_CREATE_POLYGON: 2,
+  READY: 2,
   CREATING_RAY: 3
 };
 
@@ -28,7 +28,7 @@ let Ray = class Ray {
   } 
 }
 
-let currentState = STATES.TO_CREATE_POLYGON;
+let currentState = STATES.READY;
 
 let curUnfinishedPolygon;
 
@@ -45,7 +45,7 @@ function setup(){
 function mousePressed(){
   let dot;
   switch(currentState) {
-    case STATES.TO_CREATE_POLYGON:
+    case STATES.READY:
       currentState = STATES.CREATING_POLYGON;
 
       dot = new Dot(mouseX, mouseY);
@@ -69,7 +69,7 @@ function doubleClicked() {
       curUnfinishedPolygon.dots.pop(); // removes last double dot created on doubleClicked
       polygons.push(curUnfinishedPolygon);
       cleanStateVariables();
-      currentState = STATES.TO_CREATE_POLYGON;
+      currentState = STATES.READY;
       break;
     default:
       console.log('Doubleclick with no shape started. Does nothing');
@@ -144,6 +144,6 @@ function mouseReleased() {
   if(currentState == STATES.CREATING_RAY){
     rays.push(curUnfinishedRay);
     curUnfinishedRay = null;
-    currentState = STATES.TO_CREATE_POLYGON;
+    currentState = STATES.READY;
   }
 }
