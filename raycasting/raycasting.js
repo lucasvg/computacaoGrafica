@@ -80,6 +80,7 @@ function draw() {
   background(204);
   drawPolygons();
   drawCurUnfinishedPolygon();
+  drawRays();
   drawCurUnfinishedRay();
 }
 
@@ -111,14 +112,26 @@ function drawCurUnfinishedPolygon() {
   endShape(CLOSE);
 }
 
+function drawRays(){
+  let ray;
+  for (let i = rays.length - 1; i >= 0; i--) {
+    ray = rays[i];
+    drawRay(ray);
+  }
+}
+
 function drawCurUnfinishedRay() {
   if(curUnfinishedRay)
-    line(
-      curUnfinishedRay.origin.x,
-      curUnfinishedRay.origin.y,
-      curUnfinishedRay.destiny.x,
-      curUnfinishedRay.destiny.y
-    );
+    drawRay(curUnfinishedRay);
+}
+
+function drawRay(ray){
+  line(
+    ray.origin.x,
+    ray.origin.y,
+    ray.destiny.x,
+    ray.destiny.y
+  );
 }
 
 function cleanStateVariables(){
