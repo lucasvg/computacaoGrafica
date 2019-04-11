@@ -51,12 +51,11 @@ function mousePressed(){
       dot = new Dot(mouseX, mouseY);
       curUnfinishedPolygon.addDot(dot);
 
-      console.log(curUnfinishedPolygon);
       break;
     case STATES.CREATING_POLYGON:
       dot = new Dot(mouseX, mouseY);
       curUnfinishedPolygon.addDot(dot);    
-      console.log(curUnfinishedPolygon);
+
       break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
