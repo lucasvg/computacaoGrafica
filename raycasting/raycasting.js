@@ -23,8 +23,8 @@ let Ray = class Ray {
     this.origin = origin;
   }
 
-  setAngle(angle) {
-    this.angle = angle;
+  setDestiny(destiny) {
+    this.destiny = destiny;
   } 
 }
 
@@ -83,6 +83,7 @@ function draw() {
   background(204);
   drawPolygons();
   drawCurUnfinishedPolygon();
+  drawCurUnfinishedRaw();
 }
 
 function drawPolygons(){
@@ -113,9 +114,19 @@ function drawCurUnfinishedPolygon() {
   endShape(CLOSE);
 }
 
+function drawCurUnfinishedRaw() {
+  if(curUnfinishedRay)
+    line(
+      curUnfinishedRay.origin.x,
+      curUnfinishedRay.origin.y,
+      curUnfinishedRay.destiny.x,
+      curUnfinishedRay.destiny.y
+    );
+}
+
 function cleanStateVariables(){
   curUnfinishedPolygon = new Polygon();
-  curUnfinishedRay = new Ray();
+  curUnfinishedRay = null;
 }
 
 function mouseDragged() {
@@ -123,8 +134,12 @@ function mouseDragged() {
     currentState = STATES.CREATING_RAY;
     cleanStateVariables();
 
+    curUnfinishedRay = new Ray();
     curUnfinishedRay.setOrigin(new Dot(pmouseX, pmouseY));
-    curUnfinishedRay.setAngle(0);
+    curUnfinishedRay.setDestiny(new Dot(mouseX, mouseY));
+  } else { // is changing angle
+    curUnfinishedRay.destiny.x = mouseX;
+    curUnfinishedRay.destiny.y = mouseY;
   }
 }
 
