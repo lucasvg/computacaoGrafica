@@ -42,7 +42,7 @@ function setup(){
   cleanStateVariables();
 }
 
-function mouseClicked(){
+function mousePressed(){
   let dot;
   switch(currentState) {
     case STATES.TO_CREATE_POLYGON:
@@ -57,9 +57,6 @@ function mouseClicked(){
       dot = new Dot(mouseX, mouseY);
       curUnfinishedPolygon.addDot(dot);    
       console.log(curUnfinishedPolygon);
-      break;
-    case STATES.CREATING_RAY:
-      // does nothing. Everything is done at the on dragging event
       break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
