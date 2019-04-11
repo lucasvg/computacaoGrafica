@@ -1,6 +1,7 @@
 let STATES = {
   CREATING_POLYGON: 1,
-  TO_CREATE_POLYGON: 2
+  TO_CREATE_POLYGON: 2,
+  CREATING_RAY: 3
 };
 
 let Dot = class Dot {
@@ -17,11 +18,24 @@ let Polygon = class Polygon {
   }
 }
 
+let Ray = class Ray {
+  setOrigin(origin) {
+    this.origin = origin;
+  }
+
+  setAngle(angle) {
+    this.angle = angle;
+  } 
+}
+
 let currentState = STATES.TO_CREATE_POLYGON;
 
 let curUnfinishedPolygon;
 
 let polygons = [];
+
+let curUnfinishedRay;
+let rays = [];
 
 function setup(){
   createCanvas(400, 400);
@@ -43,6 +57,9 @@ function mouseClicked(){
       dot = new Dot(mouseX, mouseY);
       curUnfinishedPolygon.addDot(dot);    
       console.log(curUnfinishedPolygon);
+      break;
+    case STATES.CREATING_RAY:
+      // does nothing. Everything is done at the on dragging event
       break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
@@ -98,5 +115,16 @@ function drawCurUnfinishedPolygon() {
 
 function cleanStateVariables(){
   curUnfinishedPolygon = new Polygon();
+  curUnfinishedRay = new Ray();
+}
+
+function mouseDragged() {
+  if(currentState != STATES.CREATING_RAY) { // if starting to create ray
+    currentState = STATES.CREATING_RAY;
+    cleanStateVariables();
+
+    curUnfinishedRay.setOrigin(new Dot(pmouseX, pmouseY));
+    curUnfinishedRay.setAngle(0);
+  }
 }
 
