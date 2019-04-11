@@ -80,7 +80,7 @@ function draw() {
   background(204);
   drawPolygons();
   drawCurUnfinishedPolygon();
-  drawCurUnfinishedRaw();
+  drawCurUnfinishedRay();
 }
 
 function drawPolygons(){
@@ -111,7 +111,7 @@ function drawCurUnfinishedPolygon() {
   endShape(CLOSE);
 }
 
-function drawCurUnfinishedRaw() {
+function drawCurUnfinishedRay() {
   if(curUnfinishedRay)
     line(
       curUnfinishedRay.origin.x,
