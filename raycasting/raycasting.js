@@ -143,3 +143,10 @@ function mouseDragged() {
   }
 }
 
+function mouseReleased() {
+  if(currentState == STATES.CREATING_RAY){
+    rays.push(curUnfinishedRay);
+    curUnfinishedRay = null;
+    currentState = STATES.TO_CREATE_POLYGON;
+  }
+}
