@@ -25,7 +25,14 @@ let Ray = class Ray {
 
   setDestiny(destiny) {
     this.destiny = destiny;
-  } 
+    this.updateAngle();
+  }
+
+  updateAngle() {
+    let deltaX = this.destiny.x - this.origin.x;
+    let deltaY = this.origin.y - this.destiny.y;
+    this.angle = atan2(deltaY, deltaX);
+  }
 }
 
 let currentState = STATES.READY;
@@ -125,12 +132,10 @@ function drawCurUnfinishedRay() {
 }
 
 function drawRay(ray){
-  line(
-    ray.origin.x,
-    ray.origin.y,
-    ray.destiny.x,
-    ray.destiny.y
-  );
+  STEP = 2;
+  for (let i = 0; i < 100; i+=STEP) {
+    point(ray.origin.x + i * Math.cos(ray.angle), ray.origin.y - i * Math.sin(ray.angle));
+  }
 }
 
 function cleanStateVariables(){
@@ -147,8 +152,7 @@ function mouseDragged() {
     curUnfinishedRay.setOrigin(new Dot(pmouseX, pmouseY));
     curUnfinishedRay.setDestiny(new Dot(mouseX, mouseY));
   } else { // is changing angle
-    curUnfinishedRay.destiny.x = mouseX;
-    curUnfinishedRay.destiny.y = mouseY;
+    curUnfinishedRay.setDestiny(new Dot(mouseX, mouseY));
   }
 }
 
