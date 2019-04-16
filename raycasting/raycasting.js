@@ -44,8 +44,11 @@ let polygons = [];
 let curUnfinishedRay;
 let rays = [];
 
+CANVAS_X = 400;
+CANVAS_Y = 400;
+
 function setup(){
-  createCanvas(400, 400);
+  createCanvas(CANVAS_X, CANVAS_Y);
   cleanStateVariables();
 }
 
@@ -132,9 +135,18 @@ function drawCurUnfinishedRay() {
 }
 
 function drawRay(ray){
-  STEP = 2;
-  for (let i = 0; i < 100; i+=STEP) {
-    point(ray.origin.x + i * Math.cos(ray.angle), ray.origin.y - i * Math.sin(ray.angle));
+  let STEP = 2;
+  let condition = true;
+  let i = 0;
+  let xCoordinate;
+  while(condition){
+    i += STEP;
+    xCoordinate = ray.origin.x + i * Math.cos(ray.angle);
+    yCoordinate = ray.origin.y - i * Math.sin(ray.angle);
+    point(xCoordinate, yCoordinate);
+    if(xCoordinate >= CANVAS_X || yCoordinate >= CANVAS_Y || xCoordinate <= 0 || yCoordinate <= 0){
+      condition = false;
+    }
   }
 }
 
