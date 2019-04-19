@@ -139,6 +139,8 @@ function drawRay(ray){
   let condition = true;
   let i = 0;
   let xCoordinate;
+
+  // draws infinite dotted line
   while(condition){
     i += STEP;
     xCoordinate = ray.origin.x + i * Math.cos(ray.angle);
