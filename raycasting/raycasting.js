@@ -152,13 +152,18 @@ function drawRay(ray){
     }
   }
 
-  // draws line
+  // draws arrow
+  arrowEndPoint = new Dot(
+    ray.origin.x + arrowLength * Math.cos(ray.angle),
+    ray.origin.y - arrowLength * Math.sin(ray.angle)
+  );
+
   line(
     ray.origin.x,
     ray.origin.y,
-    ray.origin.x + arrowLength * Math.cos(ray.angle),
-    ray.origin.y - arrowLength * Math.sin(ray.angle)
-  )
+    arrowEndPoint.x,
+    arrowEndPoint.y
+  );
 }
 
 function cleanStateVariables(){
