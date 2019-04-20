@@ -139,7 +139,7 @@ function drawRay(ray){
   let condition = true;
   let i = 0;
   let xCoordinate;
-  let arrowLength = 30;
+  let arrowLength = 20;
 
   // draws infinite dotted line
   while(condition){
@@ -157,13 +157,25 @@ function drawRay(ray){
     ray.origin.x + arrowLength * Math.cos(ray.angle),
     ray.origin.y - arrowLength * Math.sin(ray.angle)
   );
-
+  strokeWeight(3);
   line(
     ray.origin.x,
     ray.origin.y,
     arrowEndPoint.x,
     arrowEndPoint.y
   );
+  strokeWeight();
+
+  push();
+  translate(arrowEndPoint.x, arrowEndPoint.y);
+  rotate(radians(90)-ray.angle);
+  fill(51);
+  beginShape();
+  vertex(-arrowLength/4, 0);
+  vertex(arrowLength/4, 0);
+  vertex(0, - arrowLength/2);
+  endShape(CLOSE);
+  pop();
 }
 
 function cleanStateVariables(){
