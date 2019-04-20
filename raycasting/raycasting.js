@@ -1,6 +1,6 @@
 let STATES = {
   CREATING_POLYGON: 1,
-  READY: 2,
+  TO_CREATE_POLYGON: 2,
   CREATING_RAY: 3
 };
 
@@ -37,6 +37,8 @@ let Ray = class Ray {
 
 let currentState = STATES.READY;
 
+let curState = STATES.TO_CREATE_POLYGON;
+
 let curUnfinishedPolygon;
 
 let polygons = [];
@@ -50,6 +52,10 @@ CANVAS_Y = 400;
 function setup(){
   createCanvas(CANVAS_X, CANVAS_Y);
   cleanStateVariables();
+}
+
+function changeMode(){
+  curState = STATES[$("input[name='mode']:checked"). val()];
 }
 
 function mousePressed(){
