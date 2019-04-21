@@ -1,6 +1,6 @@
 let STATES = {
   CREATING_POLYGON: 1,
-  READY: 2,
+  TO_CREATE_POLYGON: 2,
   CREATING_RAY: 3
 };
 
@@ -35,7 +35,7 @@ let Ray = class Ray {
   }
 }
 
-let currentState = STATES.READY;
+let curState = STATES.TO_CREATE_POLYGON;
 
 let curUnfinishedPolygon;
 
@@ -52,11 +52,16 @@ function setup(){
   cleanStateVariables();
 }
 
+function changeMode(){
+  curState = STATES[$("input[name='mode']:checked"). val()];
+  cleanStateVariables();
+}
+
 function mousePressed(){
   let dot;
-  switch(currentState) {
-    case STATES.READY:
-      currentState = STATES.CREATING_POLYGON;
+  switch(curState) {
+    case STATES.TO_CREATE_POLYGON:
+      curState = STATES.CREATING_POLYGON;
 
       dot = new Dot(mouseX, mouseY);
       curUnfinishedPolygon.addDot(dot);
@@ -67,22 +72,46 @@ function mousePressed(){
       curUnfinishedPolygon.addDot(dot);    
 
       break;
+    case STATES.CREATING_RAY:
+      curUnfinishedRay = new Ray();
+      curUnfinishedRay.setOrigin(new Dot(pmouseX, pmouseY));
+      curUnfinishedRay.setDestiny(new Dot(mouseX, mouseY));
+      
+      break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
   }
 }
 
 function doubleClicked() {
-  switch(currentState) {
+  switch(curState) {
     case STATES.CREATING_POLYGON:
       curUnfinishedPolygon.dots.pop(); // removes last double dot created on doubleClicked
       polygons.push(curUnfinishedPolygon);
       cleanStateVariables();
-      currentState = STATES.READY;
+      curState = STATES.TO_CREATE_POLYGON;
       break;
     default:
       console.log('Doubleclick with no shape started. Does nothing');
   }
+}
+
+function mouseDragged() {
+  if(curState == STATES.CREATING_RAY) { // if starting to create ray
+    curUnfinishedRay.setDestiny(new Dot(mouseX, mouseY));
+  }
+}
+
+function mouseReleased() {
+  if(curState == STATES.CREATING_RAY){
+    rays.push(curUnfinishedRay);
+    curUnfinishedRay = null;
+  }
+}
+
+function cleanStateVariables(){
+  curUnfinishedPolygon = new Polygon();
+  curUnfinishedRay = null;
 }
 
 function draw() {
@@ -175,30 +204,4 @@ function drawRay(ray){
   vertex(0, - arrowLength/2);
   endShape(CLOSE);
   pop();
-}
-
-function cleanStateVariables(){
-  curUnfinishedPolygon = new Polygon();
-  curUnfinishedRay = null;
-}
-
-function mouseDragged() {
-  if(currentState != STATES.CREATING_RAY) { // if starting to create ray
-    currentState = STATES.CREATING_RAY;
-    cleanStateVariables();
-
-    curUnfinishedRay = new Ray();
-    curUnfinishedRay.setOrigin(new Dot(pmouseX, pmouseY));
-    curUnfinishedRay.setDestiny(new Dot(mouseX, mouseY));
-  } else { // is changing angle
-    curUnfinishedRay.setDestiny(new Dot(mouseX, mouseY));
-  }
-}
-
-function mouseReleased() {
-  if(currentState == STATES.CREATING_RAY){
-    rays.push(curUnfinishedRay);
-    curUnfinishedRay = null;
-    currentState = STATES.READY;
-  }
 }
