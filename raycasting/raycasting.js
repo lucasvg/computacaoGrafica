@@ -157,14 +157,13 @@ function drawRay(ray){
     ray.origin.x + arrowLength * Math.cos(ray.angle),
     ray.origin.y - arrowLength * Math.sin(ray.angle)
   );
-  strokeWeight(3);
+
   line(
     ray.origin.x,
     ray.origin.y,
     arrowEndPoint.x,
     arrowEndPoint.y
   );
-  strokeWeight();
 
   push();
   translate(arrowEndPoint.x, arrowEndPoint.y);
