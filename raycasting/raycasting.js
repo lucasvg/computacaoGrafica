@@ -43,6 +43,8 @@ let polygons = [];
 
 let rays = [];
 
+let intersectionSets = [];
+
 CANVAS_X = 400;
 CANVAS_Y = 400;
 
@@ -65,11 +67,13 @@ function mousePressed(){
       dot = new Dot(mouseX, mouseY);
       curUnfinishedPolygon.addDot(dot);
 
+      checkIntersections();
+
       break;
     case STATES.CREATING_POLYGON:
       dot = new Dot(mouseX, mouseY);
       curUnfinishedPolygon.addDot(dot);    
-
+      checkIntersections();
       break;
     case STATES.CREATING_RAY:
       let ray = new Ray();
@@ -77,6 +81,7 @@ function mousePressed(){
       ray.setDestiny(new Dot(mouseX, mouseY));
       rays.push(ray);
 
+      checkIntersections();
       break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
@@ -90,6 +95,7 @@ function doubleClicked() {
       polygons.push(curUnfinishedPolygon);
       cleanStateVariables();
       curState = STATES.TO_CREATE_POLYGON;
+      checkIntersections();
       break;
     default:
       console.log('Doubleclick with no shape started. Does nothing');
@@ -99,6 +105,7 @@ function doubleClicked() {
 function mouseDragged() {
   if(curState == STATES.CREATING_RAY) { // if starting to create ray
     rays[rays.length-1].setDestiny(new Dot(mouseX, mouseY));
+    checkIntersections();
   }
 }
 
@@ -111,6 +118,7 @@ function draw() {
   drawPolygons();
   drawCurUnfinishedPolygon();
   drawRays();
+  drawIntersections();
 }
 
 function drawPolygons(){
@@ -192,6 +200,14 @@ function drawRay(ray){
   pop();
 }
 
+function drawIntersections(){
+  intersectionSets.forEach(intersectionSet => {
+    intersectionSet.forEach(intersection => {
+      circle(intersection.x, intersection.y, 4);
+    });
+  });
+}
+
 // line intercept math by Paul Bourke http://paulbourke.net/geometry/pointlineplane/
 // Determine the intersection point of two line segments
 // Return FALSE if the lines don't intersect
@@ -227,30 +243,38 @@ function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
 function checkIntersections(){
   let intersection;
   let rayEnd;
+  intersectionSets = [];
   rays.forEach(ray => {
-    rayEnd = getRayEndPoint(ray);
+    setRayEnd(ray);
     polygons.forEach(polygon => {
-      let intersections = [];
-      for (let i = 0; i < polygon.dots.length - 1; i++) {
-        intersection = intersect(
-          ray.origin.x,
-          ray.origin.y,
-          rayEnd.x,
-          rayEnd.y,
-          polygon.dots[i].x,
-          polygon.dots[i].y,
-          polygon.dots[i+1].x,
-          polygon.dots[i+1].y
-        );
-        if(intersection){
-          intersections.push(intersection);
-        }
-      }
+      let intersectionSet = getIntersectionSet(ray, polygon);
+      if(intersectionSet.length > 0)
+        intersectionSets.push(intersectionSet);
     });
   });
 }
 
-function getRayEndPoint(ray){
+function getIntersectionSet(ray, polygon){
+  let intersectionSet = [];
+  for (let i = 0; i < polygon.dots.length; i++) {
+    intersection = intersect(
+      ray.origin.x,
+      ray.origin.y,
+      ray.end.x,
+      ray.end.y,
+      polygon.dots[i].x,
+      polygon.dots[i].y,
+      polygon.dots[(i+1)%polygon.dots.length].x,
+      polygon.dots[(i+1)%polygon.dots.length].y
+    );
+    if(intersection){
+      intersectionSet.push(intersection);
+    }
+  }
+  return intersectionSet;
+}
+
+function setRayEnd(ray){
   let dot;
   let i = 1;
   let xCoordinate, yCoordinate;
@@ -264,5 +288,5 @@ function getRayEndPoint(ray){
       dot = new Dot(xCoordinate, yCoordinate);
     }
   }
-  return dot;
+  ray.end = dot;
 }
