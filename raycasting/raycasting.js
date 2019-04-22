@@ -205,3 +205,78 @@ function drawRay(ray){
   endShape(CLOSE);
   pop();
 }
+
+// line intercept math by Paul Bourke http://paulbourke.net/geometry/pointlineplane/
+// Determine the intersection point of two line segments
+// Return FALSE if the lines don't intersect
+function intersect(x1, y1, x2, y2, x3, y3, x4, y4) {
+
+  // Check if none of the lines are of length 0
+	if ((x1 === x2 && y1 === y2) || (x3 === x4 && y3 === y4)) {
+		return false
+	}
+
+	denominator = ((y4 - y3) * (x2 - x1) - (x4 - x3) * (y2 - y1))
+
+  // Lines are parallel
+	if (denominator === 0) {
+		return false
+	}
+
+	let ua = ((x4 - x3) * (y1 - y3) - (y4 - y3) * (x1 - x3)) / denominator
+	let ub = ((x2 - x1) * (y1 - y3) - (y2 - y1) * (x1 - x3)) / denominator
+
+  // is the intersection along the segments
+	if (ua < 0 || ua > 1 || ub < 0 || ub > 1) {
+		return false
+	}
+
+  // Return a object with the x and y coordinates of the intersection
+	let x = x1 + ua * (x2 - x1)
+	let y = y1 + ua * (y2 - y1)
+
+	return new Dot(x, y);
+}
+
+function checkIntersections(){
+  let intersection;
+  let rayEnd;
+  rays.forEach(ray => {
+    rayEnd = getRayEndPoint(ray);
+    polygons.forEach(polygon => {
+      let intersections = [];
+      for (let i = 0; i < polygon.dots.length - 1; i++) {
+        intersection = intersect(
+          ray.origin.x,
+          ray.origin.y,
+          rayEnd.x,
+          rayEnd.y,
+          polygon.dots[i].x,
+          polygon.dots[i].y,
+          polygon.dots[i+1].x,
+          polygon.dots[i+1].y
+        );
+        if(intersection){
+          intersections.push(intersection);
+        }
+      }
+    });
+  });
+}
+
+function getRayEndPoint(ray){
+  let dot;
+  let i = 1;
+  let xCoordinate, yCoordinate;
+  let condition = true;
+  while(condition){
+    i += 1;
+    xCoordinate = ray.origin.x + i * Math.cos(ray.angle);
+    yCoordinate = ray.origin.y - i * Math.sin(ray.angle);
+    if(xCoordinate >= CANVAS_X || yCoordinate >= CANVAS_Y || xCoordinate <= 0 || yCoordinate <= 0){
+      condition = false;
+      dot = new Dot(xCoordinate, yCoordinate);
+    }
+  }
+  return dot;
+}
