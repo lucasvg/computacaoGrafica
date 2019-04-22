@@ -41,7 +41,6 @@ let curUnfinishedPolygon;
 
 let polygons = [];
 
-let curUnfinishedRay;
 let rays = [];
 
 CANVAS_X = 400;
@@ -73,10 +72,11 @@ function mousePressed(){
 
       break;
     case STATES.CREATING_RAY:
-      curUnfinishedRay = new Ray();
-      curUnfinishedRay.setOrigin(new Dot(pmouseX, pmouseY));
-      curUnfinishedRay.setDestiny(new Dot(mouseX, mouseY));
-      
+      let ray = new Ray();
+      ray.setOrigin(new Dot(pmouseX, pmouseY));
+      ray.setDestiny(new Dot(mouseX, mouseY));
+      rays.push(ray);
+
       break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
@@ -98,20 +98,12 @@ function doubleClicked() {
 
 function mouseDragged() {
   if(curState == STATES.CREATING_RAY) { // if starting to create ray
-    curUnfinishedRay.setDestiny(new Dot(mouseX, mouseY));
-  }
-}
-
-function mouseReleased() {
-  if(curState == STATES.CREATING_RAY){
-    rays.push(curUnfinishedRay);
-    curUnfinishedRay = null;
+    rays[rays.length-1].setDestiny(new Dot(mouseX, mouseY));
   }
 }
 
 function cleanStateVariables(){
   curUnfinishedPolygon = new Polygon();
-  curUnfinishedRay = null;
 }
 
 function draw() {
@@ -119,7 +111,6 @@ function draw() {
   drawPolygons();
   drawCurUnfinishedPolygon();
   drawRays();
-  drawCurUnfinishedRay();
 }
 
 function drawPolygons(){
@@ -156,11 +147,6 @@ function drawRays(){
     ray = rays[i];
     drawRay(ray);
   }
-}
-
-function drawCurUnfinishedRay() {
-  if(curUnfinishedRay)
-    drawRay(curUnfinishedRay);
 }
 
 function drawRay(ray){
