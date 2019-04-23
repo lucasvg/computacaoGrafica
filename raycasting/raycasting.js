@@ -50,6 +50,8 @@ let EDITING_CIRCLE_DIAMETER = 4;
 
 let editableDots;
 
+let curEditedDot;
+
 CANVAS_X = 400;
 CANVAS_Y = 400;
 
@@ -105,6 +107,13 @@ function mousePressed(){
       checkIntersections();
       break;
     case STATES.EDITING:
+      let clickedPoint = new Dot(mouseX, mouseY);
+      for (let i = 0; i < editableDots.length; i++) {
+        if(getDistance(clickedPoint, editableDots[i]) < EDITING_CIRCLE_DIAMETER){
+          curEditedDot = editableDots[i];
+          break;
+        }
+      }
       break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
@@ -126,9 +135,30 @@ function doubleClicked() {
 }
 
 function mouseDragged() {
-  if(curState == STATES.CREATING_RAY) { // if starting to create ray
-    rays[rays.length-1].setDestiny(new Dot(mouseX, mouseY));
-    checkIntersections();
+  switch (curState) {
+    case STATES.CREATING_RAY:
+      rays[rays.length-1].setDestiny(new Dot(mouseX, mouseY));
+      checkIntersections();  
+      break;
+    case STATES.EDITING:
+      if(curEditedDot != null){
+        curEditedDot.x = mouseX;
+        curEditedDot.y = mouseY;
+        checkIntersections();
+      }
+      break;
+    default:
+      break;
+  }
+}
+
+function mouseReleased(){
+  switch (curState) {
+    case STATES.EDITING:
+        curEditedDot = null;
+      break;
+    default:
+      break;
   }
 }
 
@@ -325,4 +355,8 @@ function setRayEnd(ray){
     }
   }
   ray.end = dot;
+}
+
+function getDistance(dot1, dot2){
+  return Math.sqrt((dot1.x-dot2.x)**2 + (dot1.y-dot2.y)**2);
 }
