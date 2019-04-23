@@ -1,7 +1,8 @@
 let STATES = {
   CREATING_POLYGON: 1,
   TO_CREATE_POLYGON: 2,
-  CREATING_RAY: 3
+  CREATING_RAY: 3,
+  EDITING: 4
 };
 
 let Dot = class Dot {
@@ -45,6 +46,8 @@ let rays = [];
 
 let intersectionSets = [];
 
+let EDITING_CIRCLE_DIAMETER = 4;
+
 CANVAS_X = 400;
 CANVAS_Y = 400;
 
@@ -83,6 +86,8 @@ function mousePressed(){
 
       checkIntersections();
       break;
+    case STATES.EDITING:
+      break;
     default:
       alert('BUG: SHOULD NOT ENTER HERE');
   }
@@ -119,6 +124,9 @@ function draw() {
   drawCurUnfinishedPolygon();
   drawRays();
   drawIntersections();
+
+  if(curState == STATES.EDITING)
+    drawEditing();
 }
 
 function drawPolygons(){
@@ -206,6 +214,21 @@ function drawIntersections(){
       circle(intersection.x, intersection.y, 4);
     });
   });
+}
+
+function drawEditing(){
+  push();
+  noStroke();
+  fill(255, 101, 192, 255);
+  polygons.forEach(polygon => {
+    polygon.dots.forEach(dot => {
+      circle(dot.x, dot.y, EDITING_CIRCLE_DIAMETER);
+    });
+  });
+  rays.forEach(ray => {
+    circle(ray.origin.x, ray.origin.y, EDITING_CIRCLE_DIAMETER);
+  });
+  pop();
 }
 
 // line intercept math by Paul Bourke http://paulbourke.net/geometry/pointlineplane/
