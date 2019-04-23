@@ -48,6 +48,8 @@ let intersectionSets = [];
 
 let EDITING_CIRCLE_DIAMETER = 4;
 
+let editableDots;
+
 CANVAS_X = 400;
 CANVAS_Y = 400;
 
@@ -59,6 +61,22 @@ function setup(){
 function changeMode(){
   curState = STATES[$("input[name='mode']:checked"). val()];
   cleanStateVariables();
+
+  if(curState == STATES.EDITING)
+    loadEditableDots();
+}
+
+function loadEditableDots(){
+  editableDots = [];
+  polygons.forEach(polygon => {
+    polygon.dots.forEach(dot => {
+      editableDots.push(dot)
+    });
+  });
+  rays.forEach(ray => {
+    editableDots.push(ray.origin);
+  });
+  
 }
 
 function mousePressed(){
@@ -220,13 +238,8 @@ function drawEditing(){
   push();
   noStroke();
   fill(255, 101, 192, 255);
-  polygons.forEach(polygon => {
-    polygon.dots.forEach(dot => {
-      circle(dot.x, dot.y, EDITING_CIRCLE_DIAMETER);
-    });
-  });
-  rays.forEach(ray => {
-    circle(ray.origin.x, ray.origin.y, EDITING_CIRCLE_DIAMETER);
+  editableDots.forEach(dot => {
+    circle(dot.x, dot.y, EDITING_CIRCLE_DIAMETER);    
   });
   pop();
 }
