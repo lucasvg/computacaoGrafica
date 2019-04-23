@@ -42,6 +42,16 @@ let Ray = class Ray {
   }
 }
 
+let IntersectionRayPolygon = class IntersectionRayPolygon {
+  constructor(location) {
+    this.location = location;
+  }
+  // distance from ray origin to intersection 
+  setDistance(distance){
+    this.distance = distance;
+  }
+}
+
 let curState = STATES.TO_CREATE_POLYGON;
 
 let curUnfinishedPolygon;
@@ -59,6 +69,8 @@ let editableDots;
 let curEditedDot;
 
 let RAY_ARROW_LENGTH = 20;
+
+let INTERSECTION_CIRCLE_DIAMETER = 6;
 
 CANVAS_X = 400;
 CANVAS_Y = 400;
@@ -264,10 +276,41 @@ function drawRay(ray){
 
 function drawIntersections(){
   intersectionSets.forEach(intersectionSet => {
-    intersectionSet.forEach(intersection => {
-      circle(intersection.x, intersection.y, 4);
-    });
+    for (let i = 0; i < intersectionSet.length; i++) {
+      if(intersectionSet.length %2 == 0)
+        if(i % 2 == 0)
+          drawIntersectionIn(intersectionSet[i]);
+        else
+          drawIntersectionOut(intersectionSet[i]);
+      else
+        if(i % 2 == 0)
+          drawIntersectionOut(intersectionSet[i]);
+        else
+          drawIntersectionIn(intersectionSet[i]);
+    }
   });
+}
+
+function drawIntersectionIn(intersection){
+  let x = intersection.location.x, y= intersection.location.y; 
+  circle(x, y, INTERSECTION_CIRCLE_DIAMETER);
+  line(
+    x-INTERSECTION_CIRCLE_DIAMETER/2,
+    y-INTERSECTION_CIRCLE_DIAMETER/2,
+    x+INTERSECTION_CIRCLE_DIAMETER/2,
+    y+INTERSECTION_CIRCLE_DIAMETER/2,
+  );
+  line(
+    x+INTERSECTION_CIRCLE_DIAMETER/2,
+    y-INTERSECTION_CIRCLE_DIAMETER/2,
+    x-INTERSECTION_CIRCLE_DIAMETER/2,
+    y+INTERSECTION_CIRCLE_DIAMETER/2,
+  )
+}
+
+function drawIntersectionOut(intersection){
+  circle(intersection.location.x, intersection.location.y, INTERSECTION_CIRCLE_DIAMETER);
+  circle(intersection.location.x, intersection.location.y, INTERSECTION_CIRCLE_DIAMETER/2);
 }
 
 function drawEditing(){
@@ -328,8 +371,10 @@ function checkIntersections(){
 
 function getIntersectionSet(ray, polygon){
   let intersectionSet = [];
+  let intersectionPosition;
+  let intersection;
   for (let i = 0; i < polygon.dots.length; i++) {
-    intersection = intersect(
+    intersectionPosition = intersect(
       ray.origin.x,
       ray.origin.y,
       ray.end.x,
@@ -339,10 +384,13 @@ function getIntersectionSet(ray, polygon){
       polygon.dots[(i+1)%polygon.dots.length].x,
       polygon.dots[(i+1)%polygon.dots.length].y
     );
-    if(intersection){
+    if(intersectionPosition){
+      intersection = new IntersectionRayPolygon(intersectionPosition);
+      intersection.setDistance(getDistance(ray.origin, intersectionPosition));
       intersectionSet.push(intersection);
     }
   }
+  intersectionSet.sort((a, b) => (a.distance > b.distance) ? 1 : -1);
   return intersectionSet;
 }
 
