@@ -27,6 +27,12 @@ let Ray = class Ray {
   setDestiny(destiny) {
     this.destiny = destiny;
     this.updateAngle();
+    this.fixesDestinyDistance();
+  }
+
+  fixesDestinyDistance() {
+    this.destiny.x = this.origin.x + RAY_ARROW_LENGTH * Math.cos(this.angle);
+    this.destiny.y = this.origin.y - RAY_ARROW_LENGTH * Math.sin(this.angle);
   }
 
   updateAngle() {
@@ -51,6 +57,8 @@ let EDITING_CIRCLE_DIAMETER = 4;
 let editableDots;
 
 let curEditedDot;
+
+let RAY_ARROW_LENGTH = 20;
 
 CANVAS_X = 400;
 CANVAS_Y = 400;
@@ -77,8 +85,8 @@ function loadEditableDots(){
   });
   rays.forEach(ray => {
     editableDots.push(ray.origin);
+    editableDots.push(ray.destiny);
   });
-  
 }
 
 function mousePressed(){
@@ -145,6 +153,10 @@ function mouseDragged() {
         curEditedDot.x = mouseX;
         curEditedDot.y = mouseY;
         checkIntersections();
+        rays.forEach(ray => {
+          ray.updateAngle();
+          ray.fixesDestinyDistance();
+        });
       }
       break;
     default:
@@ -218,7 +230,6 @@ function drawRay(ray){
   let condition = true;
   let i = 0;
   let xCoordinate;
-  let arrowLength = 20;
 
   // draws infinite dotted line
   while(condition){
@@ -231,27 +242,21 @@ function drawRay(ray){
     }
   }
 
-  // draws arrow
-  arrowEndPoint = new Dot(
-    ray.origin.x + arrowLength * Math.cos(ray.angle),
-    ray.origin.y - arrowLength * Math.sin(ray.angle)
-  );
-
   line(
     ray.origin.x,
     ray.origin.y,
-    arrowEndPoint.x,
-    arrowEndPoint.y
+    ray.destiny.x,
+    ray.destiny.y
   );
 
   push();
-  translate(arrowEndPoint.x, arrowEndPoint.y);
+  translate(ray.destiny.x, ray.destiny.y);
   rotate(radians(90)-ray.angle);
   fill(51);
   beginShape();
-  vertex(-arrowLength/4, 0);
-  vertex(arrowLength/4, 0);
-  vertex(0, - arrowLength/2);
+  vertex(-RAY_ARROW_LENGTH/4, 0);
+  vertex(RAY_ARROW_LENGTH/4, 0);
+  vertex(0, - RAY_ARROW_LENGTH/2);
   endShape(CLOSE);
   pop();
 }
