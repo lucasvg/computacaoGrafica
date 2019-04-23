@@ -157,6 +157,7 @@ function mouseDragged() {
           ray.updateAngle();
           ray.fixesDestinyDistance();
         });
+        checkIntersections();
       }
       break;
     default:
