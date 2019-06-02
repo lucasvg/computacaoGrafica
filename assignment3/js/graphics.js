@@ -1,6 +1,8 @@
 var camera;
 var scene;
 var renderer;
+var cube;
+
 function runGraphics(){
     setupThree();
     setupModels();
@@ -18,8 +20,8 @@ function setupThree(){
 
 function setupModels(){
     var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-    var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
-    var cube = new THREE.Mesh( geometry, material );
+    var material = new THREE.MeshNormalMaterial();
+    cube = new THREE.Mesh( geometry, material );
     scene.add( cube );
 }
 
@@ -30,4 +32,6 @@ function animate() {
 }
 
 function animationTasks(){
+    cube.rotation.x += 0.01;
+    cube.rotation.y += 0.01;
 }
