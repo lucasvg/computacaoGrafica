@@ -2,6 +2,8 @@ var camera;
 var scene;
 var renderer;
 var objs = [];
+var raycaster = new THREE.Raycaster();
+var mouse = new THREE.Vector2();
 
 function runGraphics(){
     setupThree();
@@ -18,6 +20,7 @@ function setupThree(){
     document.body.appendChild( renderer.domElement );
 
     var control = new THREE.OrbitControls(camera, renderer.domElement);
+    renderer.domElement.addEventListener( 'click', pickObj, false );
 }
 
 function setupModels(){
@@ -44,4 +47,31 @@ function animate() {
 }
 
 function animationTasks(){
+}
+
+// mouse click to pick object on the scene
+function pickObj(e){
+    //1. sets the mouse position with a coordinate system where the center
+    //   of the screen is the origin
+    mouse.x = ( e.clientX / window.innerWidth ) * 2 - 1;
+    mouse.y = - ( e.clientY / window.innerHeight ) * 2 + 1;
+
+    //2. set the picking ray from the camera position and mouse coordinates
+    raycaster.setFromCamera( mouse, camera );    
+
+    //3. compute intersections
+    var intersects = raycaster.intersectObjects( scene.children );
+
+    for ( var i = 0; i < intersects.length; i++ ) {
+        console.log( intersects[ i ] ); 
+        /*
+            An intersection has the following properties :
+                - object : intersected object (THREE.Mesh)
+                - distance : distance from camera to intersection (number)
+                - face : intersected face (THREE.Face3)
+                - faceIndex : intersected face index (number)
+                - point : intersection point (THREE.Vector3)
+                - uv : intersection point in the object's UV coordinates (THREE.Vector2)
+        */
+    }
 }
